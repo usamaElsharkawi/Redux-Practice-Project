@@ -16,6 +16,11 @@ const reducer = (state = initialState, action) => {
             counter: state.counter - 1,
         };
     }
+    if (action.type === "INCREASE") {
+        return {
+            counter: state.counter + action.payload,
+        };
+    }
     return state;
 };
 
