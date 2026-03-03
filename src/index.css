@@ -24,3 +24,19 @@ button:active {
   background-color: #5b14ac;
   border-color: #5b14ac;
 }
+
+.counter {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 20rem;
+  margin: 5rem auto;
+  text-align: center;
+}
+
+.value {
+  margin: 2rem 0;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
