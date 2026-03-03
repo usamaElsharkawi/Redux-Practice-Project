@@ -43,3 +43,50 @@ Data flows completely predictably through these four steps:
 
 - When a Reducer calculates the new state, Redux takes exactly what the Reducer returns and uses it to completely overwrite and replace the old Store object.
 - Therefore, to update only a single property, we must always copy all the other unchanged data into our new return object (using the JavaScript spread operator `...oldState`) so we don't accidentally delete the rest of the application's data.
+
+---
+
+### 7. Providing the Redux Store to the React App
+
+- After creating the store, React has no idea it exists. We must connect the two using the `<Provider>` component from the `react-redux` library.
+- Wrap the entire `<App />` inside `<Provider store={store}>` in `src/index.js`. This is the highest level of the React tree, ensuring every component in the entire app can access the Store.
+- Think of the `<Provider>` as installing a power grid. The Redux Store is the Power Plant. The `<Provider>` lays the power lines to every house (component) in the city (app).
+
+### 8. Reading Data from the Store: `useSelector`
+
+- `useSelector` is a hook from `react-redux` that allows a component to extract (select) a specific slice of data from the Redux Store.
+- It takes a **Selector Function** as its argument: `const counter = useSelector(state => state.counter);`
+- **What it does internally:**
+  1. **Extraction**: It runs the Selector function, passing the full Store state object in as the argument, and returns only the specific value you asked for.
+  2. **Precision Subscription**: It automatically subscribes the component to that specific slice of data. After every Action is dispatched, Redux re-runs your Selector and compares the new result to the old one. If different → re-render. If same → do nothing.
+
+#### `useSelector` vs `useStore`
+
+|                     | `useSelector`                    | `useStore`                              |
+| ------------------- | -------------------------------- | --------------------------------------- |
+| **What it reads**   | A precise slice of state         | The entire raw Store object             |
+| **Re-renders when** | Only the selected slice changes  | ❌ Never. Does not subscribe.           |
+| **When to use**     | ✅ Always for displaying UI data | Rarely. Advanced background tasks only. |
+
+### 9. The One-Store Rule (Single Source of Truth)
+
+- While you can technically create multiple Redux stores, **you must never do this**. It destroys every advantage Redux provides.
+- Multiple stores break the unified audit trail, make Time-Travel Debugging impossible, and create data synchronization nightmares between stores.
+- The correct approach for handling multiple domains of data (Auth, Cart, Products) is to create **multiple Reducer functions** and merge them into a single Store using `combineReducers`.
+
+---
+
+### ✅ The Complete Redux Cycle (Verified Mental Model)
+
+This is the full, end-to-end flow of Redux validated as a perfect mental model:
+
+1. There is **one giant Redux Store** — the Single Source of Truth for all global state in the app.
+2. **Components that need data subscribe** to the Store automatically when they use the `useSelector` hook.
+3. When a **user interacts** with a component, the component **dispatches an Action** (a plain JS object). It never touches the Store directly.
+4. The Action is **forwarded to the Reducer function**, which receives the current state and the Action as arguments.
+5. The Reducer **returns a brand-new state object** (never mutating the old one) based on the Action type.
+6. Redux **compares the new state to the old one**. If it changed, it notifies all subscribed components.
+7. All subscribed components re-execute their **Selector function** (the one passed to `useSelector`). React-Redux passes the entire new Store state into it.
+8. If the specific data the Selector returns **has changed** from what it returned before → the component **re-renders**. If it is the same → the component is **ignored**.
+
+> **Key Immutability Note:** The Reducer does not "update" the Store. It returns a completely new state object. Redux discards the old state and replaces it with the new one. This is what makes Time-Travel Debugging possible.
