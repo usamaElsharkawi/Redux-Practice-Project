@@ -1,6 +1,6 @@
-import classes from './Header.module.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { authActions } from '../store/index';
+import classes from "./Header.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../store/auth-slice";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -15,17 +15,17 @@ const Header = () => {
         <ul>
           {isAuthenticated && (
             <li>
-              <a href='/'>My Products</a>
+              <a href="/">My Products</a>
             </li>
           )}
           {isAuthenticated && (
             <li>
-              <a href='/'>My Sales</a>
+              <a href="/">My Sales</a>
             </li>
           )}
           {isAuthenticated && (
             <li>
-              <button onClick={ logoutHandler}>Logout</button>
+              <button onClick={logoutHandler}>Logout</button>
             </li>
           )}
         </ul>
